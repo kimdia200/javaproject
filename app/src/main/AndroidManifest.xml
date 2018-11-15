@@ -19,4 +19,6 @@
         <activity android:name=".AddAdressActivity" android:label="@string/action_add"/>
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

@@ -14,5 +14,9 @@
     <string name="input_number">연락처를 입력하세요.</string>
     <string name="saveInfo">저장완료</string>
     <string name="close">닫기</string>
+    <string name="logout">로그아웃</string>
+    <string name="status_logout">로그아웃 상태</string>
+    <string name="login">로그인</string>
+    <string name="status_login">로그인 상태</string>
 
 </resources>

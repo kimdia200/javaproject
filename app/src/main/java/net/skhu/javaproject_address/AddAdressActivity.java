@@ -6,24 +6,48 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class AddAdressActivity extends AppCompatActivity {
 
+    private TextView textView_status;
+    private String googleEmail;
+
+    public boolean nullCheck(String s){
+        if(s==null)
+            return false;
+        return s.toString().trim().length()==0;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_adress);
+
+
+
+
+
+    }
     public void onClick_add(View view){
-        String name;
-        String age;
-        String email;
-        String number;
+
+        String name,age,email,number;
         EditText eName = (EditText)findViewById(R.id.editText_name);
         EditText eAge = (EditText)findViewById(R.id.editText_age);
         EditText eEmail = (EditText)findViewById(R.id.editText_email);
         EditText eNumber = (EditText)findViewById(R.id.editText_number);
 
+
+
         name = eName.getText().toString();
         age = eAge.getText().toString();
         email = eEmail.getText().toString();
         number = eNumber.getText().toString();
+
 
         if(nullCheck(name)){ //추후 밑에 텍스트 모두 string 요소로 전환 필요
             eName.setError("이름을 입력하세요");
@@ -41,7 +65,8 @@ public class AddAdressActivity extends AppCompatActivity {
             if(nullCheck(age)==false){
                 if(nullCheck(email)==false){
                     if(nullCheck(number)==false) {
-                        //현재 미구현
+                        Person p = new Person(name,age,email,number);
+                        sendToDB(p);
                         //데이터베이스 연동 구현
                         AlertDialog.Builder bd = new AlertDialog.Builder(this);
                         bd.setTitle(R.string.saveInfo);
@@ -62,17 +87,14 @@ public class AddAdressActivity extends AppCompatActivity {
             }
         }
     }//onClick_add 메소드 종료
+    public void sendToDB(Person p){
+        Intent intent = getIntent();
+        googleEmail = (String)intent.getStringExtra("google_email");
+        int idEndIndex = googleEmail.indexOf("@");
+        String googleId = googleEmail.substring(0,idEndIndex);
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("myData01");
 
-
-    public boolean nullCheck(String s){
-        if(s==null)
-            return false;
-        return s.toString().trim().length()==0;
+        databaseReference.child(googleId).push().setValue(p);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_adress);
-    }
 }
