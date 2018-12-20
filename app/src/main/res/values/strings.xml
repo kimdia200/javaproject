@@ -18,5 +18,6 @@
     <string name="status_logout">로그아웃 상태</string>
     <string name="login">로그인</string>
     <string name="status_login">로그인 상태</string>
+    <string name="viewList">리스트 보기</string>
 
 </resources>

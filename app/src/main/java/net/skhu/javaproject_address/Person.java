@@ -2,7 +2,7 @@ package net.skhu.javaproject_address;
 
 public class Person {
     private String name,age,email,number;
-
+    public Person(){}
     public Person(String name,String age, String email ,String number){
         this.name = name;
         this.age = age;

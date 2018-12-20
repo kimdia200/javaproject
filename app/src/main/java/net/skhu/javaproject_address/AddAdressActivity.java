@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.TextView;
@@ -21,45 +22,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddAdressActivity extends AppCompatActivity {
-
-    private List<Person> list ;
-    private String googleEmail;
-    MyRecyclerViewAdapter myRecyclerViewAdapter;
-    DatabaseReference databaseReference;
-
-    public boolean nullCheck(String s){
-        if(s==null)
-            return false;
-        return s.toString().trim().length()==0;
-    }
+    List<Person> arrayList;
+    DatabaseReference myServerData02;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_adress);
-        list = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("myData01");
-        ValueEventListener listener = databaseReference.addValueEventListener(new ValueEventListener() {
+        arrayList = new ArrayList<Person>();
+        myServerData02 = FirebaseDatabase.getInstance().getReference("myServerData02");
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<ArrayList<Person>> typeIndicator = new GenericTypeIndicator<ArrayList<Person>>() {};
-                ArrayList<Person> temp = dataSnapshot.getValue(typeIndicator);
-                if(temp!=null){
-                    list.clear();
-                    list.addAll(temp);
-                    myRecyclerViewAdapter.notifyDataSetChanged();
-                }}
+                GenericTypeIndicator<ArrayList<Person>> t = new GenericTypeIndicator<ArrayList<Person>>() {};
+                ArrayList<Person> firebaseData  = dataSnapshot.getValue(t);
+                if (firebaseData != null) {
+                    arrayList.clear();
+                    arrayList.addAll(firebaseData);
+                    Log.e("내태그", arrayList.toString());
+                }
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
-
-
-
-
-
+        };
+        myServerData02.addValueEventListener(listener);
     }
     public void onClick_add(View view){
 
@@ -95,7 +84,6 @@ public class AddAdressActivity extends AppCompatActivity {
                     if(nullCheck(number)==false) {
                         //리스트 받아오는거 해야됨
                         Person person =new Person(name,age,email,number);
-
                         sendToDB(person);
                         //데이터베이스 연동 구현
                         AlertDialog.Builder bd = new AlertDialog.Builder(this);
@@ -118,15 +106,14 @@ public class AddAdressActivity extends AppCompatActivity {
         }
     }//onClick_add 메소드 종료
     public void sendToDB(final Person p){
-        Intent intent = getIntent();
-        googleEmail = (String)intent.getStringExtra("google_email");
-        int idEndIndex = googleEmail.indexOf("@");
-        String googleId = googleEmail.substring(0,idEndIndex);
-        list.add(p);
-        databaseReference.setValue(list);
-//        databaseReference.child(googleId).setValue(list);
-        Intent intent2 = new Intent(this,MainActivity.class);
-
+        arrayList.add(p);
+        myServerData02.setValue(arrayList);
+    }
+    public boolean nullCheck(String s){
+        if(s.trim().length()==0)
+            return true;
+        else
+            return false;
     }
 
 }

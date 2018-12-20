@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -33,9 +34,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     LayoutInflater layoutInflater;
-    ArrayList<Person> arrayList;
+    List<Person> arrayList;
 
-    public MyRecyclerViewAdapter(Context context, ArrayList<Person> arrayList) {
+    public MyRecyclerViewAdapter(Context context, List<Person> arrayList) {
         this.layoutInflater = LayoutInflater.from(context);
         this.arrayList = arrayList;
     }
