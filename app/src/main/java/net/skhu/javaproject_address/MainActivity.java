@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,15 +28,32 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    MyRecyclerViewAdapter myRecyclerViewAdapter;
     private static final String TAG = "파이어베이스 ";
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mStatusTextView;
     private TextView statusNow;
+    public ArrayList<Person> arrayList;
+    DatabaseReference myData01;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +61,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         mStatusTextView = (TextView)findViewById(R.id.textView_googleID);
         statusNow = (TextView)findViewById(R.id.textView_status) ;
+        arrayList = new ArrayList<Person>();
+        myRecyclerViewAdapter = new MyRecyclerViewAdapter(this, arrayList);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(myRecyclerViewAdapter);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -47,6 +75,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .build();
         mGoogleSignInClient =  GoogleSignIn.getClient(this, gso);
         mAuth = FirebaseAuth.getInstance();
+
+//        myData01 = FirebaseDatabase.getInstance().getReference("myData01");
+//        ValueEventListener listener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                GenericTypeIndicator<ArrayList<Person>> typeIndicator = new GenericTypeIndicator<ArrayList<Person>>() {};
+//                ArrayList<Person> temp = dataSnapshot.getValue(typeIndicator);
+//                if(temp!=null){
+//                    arrayList.clear();
+//                    arrayList.addAll(temp);
+//                    myRecyclerViewAdapter.notifyDataSetChanged();
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//            }
+//        };myData01.addValueEventListener(listener);
 
     }
 
@@ -121,9 +168,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
+        }
     public void signOut(){
         FirebaseAuth.getInstance().signOut();
+        arrayList.clear();
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
                     @Override
@@ -167,4 +215,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else Toast.makeText(this, "로그인 되어있지 않습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

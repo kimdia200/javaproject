@@ -6,8 +6,9 @@ public class Person {
     public Person(String name,String age, String email ,String number){
         this.name = name;
         this.age = age;
-        this.email = email;
         this.number = number;
+        this.email = email;
+
     }
 
     public String getName() {
