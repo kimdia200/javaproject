@@ -1,6 +1,9 @@
 package net.skhu.javaproject_address;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.util.Log;
@@ -8,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView textView1, textView2,textView3,textView4;
 
         public ViewHolder(View view) {
@@ -21,6 +26,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             textView2 = view.findViewById(R.id.textView2);
             textView3 = view.findViewById(R.id.textView3);
             textView4 = view.findViewById(R.id.textView4);
+            view.setOnClickListener(this);
         }
 
         public void setData() {
@@ -31,6 +37,18 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             textView4.setText(person.getEmail());
 
         }
+
+        @Override
+        public void onClick(View v) {
+            Person person = arrayList.get(super.getAdapterPosition());
+            String name = person.getName();
+            String age = person.getAge();
+            String email = person.getEmail();
+            String number = person.getNumber();
+//            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+number));
+//            v.getContext().startActivity(intent);
+
+            }
     }
 
     LayoutInflater layoutInflater;

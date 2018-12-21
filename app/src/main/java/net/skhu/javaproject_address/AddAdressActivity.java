@@ -23,14 +23,17 @@ import java.util.List;
 
 public class AddAdressActivity extends AppCompatActivity {
     List<Person> arrayList;
-    DatabaseReference myServerData02;
+    DatabaseReference fireBaseRef;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_adress);
+        Intent intent = getIntent();
+        id = (String)intent.getStringExtra("googleID");
         arrayList = new ArrayList<Person>();
-        myServerData02 = FirebaseDatabase.getInstance().getReference("myServerData02");
+        fireBaseRef = FirebaseDatabase.getInstance().getReference(id);
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -48,7 +51,7 @@ public class AddAdressActivity extends AppCompatActivity {
 
             }
         };
-        myServerData02.addValueEventListener(listener);
+        fireBaseRef.addValueEventListener(listener);
     }
     public void onClick_add(View view){
 
@@ -107,7 +110,7 @@ public class AddAdressActivity extends AppCompatActivity {
     }//onClick_add 메소드 종료
     public void sendToDB(final Person p){
         arrayList.add(p);
-        myServerData02.setValue(arrayList);
+        fireBaseRef.setValue(arrayList);
     }
     public boolean nullCheck(String s){
         if(s.trim().length()==0)

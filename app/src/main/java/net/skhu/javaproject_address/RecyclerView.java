@@ -1,5 +1,6 @@
 package net.skhu.javaproject_address;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,12 +25,15 @@ import java.util.List;
 public class RecyclerView extends AppCompatActivity {
     MyRecyclerViewAdapter myRecyclerViewAdapter;
     List<Person> arrayList;
-    DatabaseReference myServerData02;
+    DatabaseReference fireBaseRef;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_view);
+        Intent intent = getIntent();
+        id = (String)intent.getStringExtra("googleID");
 
         arrayList = new ArrayList<Person>();
 
@@ -39,7 +44,7 @@ public class RecyclerView extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(myRecyclerViewAdapter);
 
-        myServerData02 = FirebaseDatabase.getInstance().getReference("myServerData02");
+        fireBaseRef = FirebaseDatabase.getInstance().getReference(id);
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -51,6 +56,8 @@ public class RecyclerView extends AppCompatActivity {
                     myRecyclerViewAdapter.notifyDataSetChanged();
                     Log.e("내태그", arrayList.toString());
                 }
+                else
+                    Toast.makeText(RecyclerView.this, "현재 표시할 데이터가 없습니다", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -58,7 +65,7 @@ public class RecyclerView extends AppCompatActivity {
 
             }
         };
-        myServerData02.addValueEventListener(listener);
+        fireBaseRef.addValueEventListener(listener);
 
     }
 }
